@@ -1,0 +1,2 @@
+PsychoPy==1.82.01
+wsgiref==0.1.2
