@@ -17,3 +17,11 @@ Welcome to sweetcrave, a prject with two fMRI experiments. This project uses [Ps
 
 For fMRI block designs you want to use non-slip timing (trials of pre-determined duration). Builder indicates these with a green icon in the Flow panel
 
+# Other resources
+
+ - [Braintree Pump Mechanism](http://www.braintreesci.com/prodinfo.asp?number=BS-8000)
+ - https://www.socsci.ru.nl/wilberth/nocms/psychopy/print.php
+ - http://www.psychopy.org/about/overview.html
+ - https://waffle.io/
+ - https://docs.python.org/2/library/csv.html
+ 
