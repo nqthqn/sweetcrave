@@ -1,0 +1,131 @@
+# pcl file for 
+# EDfoodpics 3/2013 ksb          
+        
+                                                    
+string expName="EDfoodpics";
+string picNameFile="EDfoodpicsNames.txt";
+int theSeed=1234;
+int numPics=90;
+int picDur=5000;
+
+int stime;
+
+
+string defaultDataFileName="TestSubj";
+string subjID=logfile.subject(); 
+if (subjID=="") then subjID=defaultDataFileName;end;
+string dataFileName=subjID+ "_"+expName+".txt";
+
+
+array <string> picName[numPics];
+array <int> theIntv[3];
+array <int> whichIntv[numPics];
+array <int> whichPic[numPics];
+
+theIntv[1]=3500;
+theIntv[2]=4000;
+theIntv[3]=5000;
+
+set_random_seed(theSeed);
+int n=1;
+loop
+	int x=1
+until
+	x>numPics
+begin
+	whichPic[x]=x;
+	whichIntv[x]=n;
+	n=n+1;
+	if n>3 then n=1;end;
+	x=x+1;
+end;
+whichPic.shuffle();
+whichIntv.shuffle();
+
+# read stim file names
+input_file pInFile = new input_file;     
+pInFile.open(picNameFile); 
+
+string headline=pInFile.get_string();
+int len;
+loop
+	int i=1 
+until
+	i>numPics
+begin
+	picName[i]=pInFile.get_string();
+	len=picName[i].count();
+	picName[i]=picName[i].substring(2,len-3);
+	i=i+1;
+end; #i
+pInFile.close();
+
+output_file datfile = new output_file;  
+datfile.open_append(dataFileName);            # data file
+
+#data file is trialNum, time of pic, pic name
+
+                              #SUB ROUTINES    
+ 
+
+sub
+   set_stim_info(int tnum, int wt)
+begin 
+	int sn;
+	int theTime;
+	string theName=picName[wt];
+	string Outfile_Ln;
+
+	sn=stimulus_manager.stimulus_count();
+   if (sn>0) then
+		stimulus_data last = stimulus_manager.last_stimulus_data();
+		theTime=last.time()-stime;
+	
+      Outfile_Ln=string(tnum)+" "+
+                 string(theTime)+" "+
+                 theName+"\n";
+      datfile.print(Outfile_Ln);  
+term.print(Outfile_Ln);
+		
+ end;
+end; #set_stim_info                             
+
+       
+               # MAIN  
+                              
+loop until (pulse_manager.main_pulse_count() >= 1)      
+begin
+end;
+stime = pulse_manager.main_pulse_time(1);
+term.print(string(stime)+"\n"); 
+       
+          
+startDelay.present();     # wait 10,000 ms before trials 
+ 
+                              #PRESENT TRIALS   
+int thisIntv;       
+int trialDur; 
+int t;    
+int wi;    
+loop
+   int trialNum = 1
+until
+   trialNum > numPics
+begin    
+   t=whichPic[trialNum];
+   wi=whichIntv[trialNum];
+ 
+	thisIntv=theIntv[wi];       # change this to 1, 2, or 3
+	picevent.set_deltat(thisIntv);
+	trialDur=thisIntv+picDur;
+	theTrial.set_duration(trialDur);
+	
+	spic.set_part(1,pics[t]);
+	
+	theTrial.present();     
+	set_stim_info(trialNum,t);
+	trialNum=trialNum+1;
+	    
+end; # trials
+datfile.close();
+endDelay.present();     

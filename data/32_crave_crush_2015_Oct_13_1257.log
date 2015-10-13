@@ -1,0 +1,23 @@
+0.5209 	WARNING 	Movie2 stim could not be imported and won't be available
+0.8303 	WARNING 	TextBox stim could not be imported and won't be available.
+0.8303 	WARNING 	TextBox Font Manager Found No Fonts.
+4.0077 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, bitsMode=UNKNOWN, blendMode='avg', color=array([ 0.,  0.,  0.]), colorSpace='rgb', fullscr=UNKNOWN, gamma=None, lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor instance at 0xc080468>, name='window1', pos=[0, 0], screen=0, size=array([1920, 1080]), stereo=False, units=u'norm', useFBO=True, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+4.0077 	EXP 	window1: recordFrameIntervals = False
+4.1740 	EXP 	window1: recordFrameIntervals = True
+4.3573 	EXP 	window1: recordFrameIntervals = False
+4.4648 	EXP 	Created fixation = TextStim(alignHoriz='center', alignVert='center', antialias=True, autoLog=True, bold=False, color=u'white', colorSpace='named', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font=u'Arial', fontFiles=[], height=0.1, italic=False, name='fixation', opacity=1.0, ori=0, pos=array([ 0.,  0.]), rgb=array([ 255.,  255.,  255.]), text=u'+', units=u'norm', win=Window(...), wrapWidth=1)
+4.5070 	EXP 	Created image = ImageStim(autoLog=True, color=array([ 1.,  1.,  1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, image=u'stimuli/Milkshake.jpg', interpolate=True, mask=None, maskParams=None, name='image', opacity=1.0, ori=0.0, pos=array([ 0.,  0.]), size=array([ 0.71145833,  2.96296296]), texRes=128, units=u'norm', win=Window(...))
+4.5070 	EXP 	window1: units = 'norm'
+4.6204 	EXP 	window1: units = u'norm'
+4.6206 	EXP 	Created rating = RatingScale(acceptKeys=['return'], acceptPreText=UNKNOWN, acceptSize=UNKNOWN, acceptText=u'accept?', autoLog=True, choices=False, depth=0, disappear=False, flipVert=False, high=5, kwargs=UNKNOWN, labels=list(...), leftKeys=['left'], lineColor='White', low=1, marker=ShapeStim(...), markerColor='DarkBlue', markerExpansion=UNKNOWN, markerStart=None, maxTime=0.0, minTime=0.4, mouseOnly=False, name='rating', noMouse=False, pos=[0.0, -0.4], precision=1, respKeys=['1', '2', '3', '4', '5'], rightKeys=['right'], scale=u'Rate your craving from 1 - 5', self=UNKNOWN, showAccept=True, showValue=True, singleClick=False, size=0.6, skipKeys=['tab'], stretch=1.0, textColor='LightGray', textFont='Helvetica Bold', textSize=0.12, tickHeight=1.0, tickMarks=4.0, win=Window(...))
+4.6228 	EXP 	Created image_2 = ImageStim(autoLog=True, color=array([ 1.,  1.,  1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, image=None, interpolate=True, mask=None, maskParams=None, name='image_2', opacity=1.0, ori=0.0, pos=array([ 0.,  0.]), size=array([ 0.5,  0.5]), texRes=128, units=u'norm', win=Window(...))
+4.6258 	EXP 	Created fixation_2 = TextStim(alignHoriz='center', alignVert='center', antialias=True, autoLog=True, bold=False, color=u'white', colorSpace='named', contrast=1.0, depth=-5.0, flipHoriz=False, flipVert=False, font=u'Arial', fontFiles=[], height=0.1, italic=False, name='fixation_2', opacity=1.0, ori=0, pos=array([ 0.,  0.]), rgb=array([ 255.,  255.,  255.]), text=u'+', units=u'norm', win=Window(...), wrapWidth=1)
+4.6309 	EXP 	RatingScale rating: reset()
+4.6310 	EXP 	window1: recordFrameIntervals = False
+4.6567 	EXP 	rating: flipVert = False
+4.6567 	EXP 	rating: autoLog = True
+4.6567 	EXP 	fixation: autoDraw = True
+4.6568 	EXP 	window1: recordFrameIntervals = False
+14.6305 	EXP 	fixation: autoDraw = False
+14.6473 	EXP 	image: autoDraw = True
+16.9462 	DATA 	Keypress: escape
