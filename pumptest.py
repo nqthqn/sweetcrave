@@ -34,8 +34,8 @@ for cmd in commands:
   if out != '':
     print '>>' + out
 
+# Dynamic
 # print 'Enter your commands below.\r\nInsert "exit" to leave the application.'
-
 # input=1
 # while 1 :
 #   input = raw_input(">> ")
