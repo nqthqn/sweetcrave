@@ -1,28 +1,28 @@
 import time
 import serial
 
+# ftdi drivers
 # configure the serial connections (the parameters differs on the device you are connecting to)
+# serial('com1','baudrate',19200,'databits',8,'terminator',13);
 ser = serial.Serial(
-  port='/dev/tty.USA19H142P1.1', # /dev/tty.KeySerial1 ?
-  baudrate=19200,
+  port='/dev/tty.KeySerial1', # /dev/tty.KeySerial1 ? /dev/tty.USA19H142P1.1 ?
+  baudrate=115200, # 19200
   parity=serial.PARITY_ODD,
   stopbits=serial.STOPBITS_TWO,
   bytesize=serial.SEVENBITS
 )
 
 
-
-
 if not ser.isOpen():
   ser.open()
 
 print ser
-commands = ['dia26.59', 'phn01', 'funrat', 'rat15mm', 'vol0.7', 'dirinf',
-            'phn02', 'funrat', 'rat7.5mm', 'vol.5', 'dirinf', 'phn03',
-            'funrat', 'rat15mm', 'vol0.7', 'dirwdr', 'phn04', 'funstp',
-            'dia26.59', 'phn01', 'funrat', 'rat15mm', 'vol1.0', 'dirinf',
-            'phn02', 'funrat', 'rat7.5mm', 'vol.5', 'dirinf', 'phn03',
-            'funrat', 'rat15mm', 'vol1.0', 'dirwdr', 'phn04', 'funstp']
+commands = ['DIA26.59', 'PHN01', 'FUNRAT', 'RAT15MM', 'VOL0.7', 'DIRINF',
+            'PHN02', 'FUNRAT', 'RAT7.5MM', 'VOL.5', 'DIRINF', 'PHN03',
+            'FUNRAT', 'RAT15MM', 'VOL0.7', 'DIRWDR', 'PHN04', 'FUNSTP',
+            'DIA26.59', 'PHN01', 'FUNRAT', 'RAT15MM', 'VOL1.0', 'DIRINF',
+            'PHN02', 'FUNRAT', 'RAT7.5MM', 'VOL.5', 'DIRINF', 'PHN03',
+            'FUNRAT', 'RAT15MM', 'VOL1.0', 'DIRWDR', 'PHN04', 'FUNSTP']
 
 for cmd in commands:
   print cmd
