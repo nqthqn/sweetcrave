@@ -1,6 +1,6 @@
 from psychopy import visual, core, event, data, gui, logging
 
-DEBUG = False
+DEBUG = True
 fullscr = False
 monSize = [1024, 768]  # might need to change this at LCNI
 if DEBUG:
