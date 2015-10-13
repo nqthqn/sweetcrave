@@ -2,7 +2,9 @@
 
 Welcome to sweetcrave, a project with two fMRI experiments ("Sweet Image" and "Crave Crush"). This project uses [PsychoPy](https://github.com/psychopy/psychopy), a free psychology software in Python. Please cite the relevant papers (Peirce 2007; 2009) if you use PsychoPy in published work.
 
-[PsychoPy Usage](http://www.psychopy.org/usage.php)
+**PsychoPy Usage**
+[Current Usage](http://www.psychopy.org/usage.php)
+[Open Hub Stats](https://www.openhub.net/p/PsychoPy?ref=Partner+Badge)
 
 ## Local Development
 

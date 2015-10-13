@@ -1,4 +1,4 @@
-from psychopy import visual, core, event, data, gui, logging
+from psychopy import visual, core, data, gui, logging
 
 DEBUG = True
 fullscr = False
@@ -18,7 +18,7 @@ if not dlg.OK:
     core.quit()
 # info['fixFrames'] = 30  # 0.5s at 60Hz, 1s = 60 frames
 info['calibration'] = 60  # 1s = 60 frames (multiple the jitter by 60)
-info['cueFrames'] = 300  # 5s at 60Hz
+info['cueFrames'] = 5 * 60  # 5s at 60Hz = 300 frames
 info['dateStr'] = data.getDateStr()
 
 # initialise stimuli
@@ -27,14 +27,6 @@ win = visual.Window(monSize, fullscr=fullscr,
 fixation = visual.Circle(win, size=0.5,
                          lineColor='white', fillColor='lightGrey')
 respClock = core.Clock()
-
-# set up the trials/experiment
-if info['condition'] == '1':
-    conditions = data.importConditions('sweet_image_condition1.csv')
-elif info['condition'] == '2':
-    conditions = data.importConditions('sweet_image_condition2.csv')
-else:
-    core.quit()  # nothing to do
 
 
 def pl(*args):
@@ -46,48 +38,76 @@ def pl(*args):
 def run_block():
     """ Runs a block of trials
     """
-    # create trial handler (loop)
-    trials = data.TrialHandler(trialList=conditions, nReps=1,
-                               method='sequential')
+    not_done = True
+    # Text Stim
+    fixation = visual.TextStim(win, text='+', pos=(0, 0))
+    taste_delivery = visual.TextStim(win, text='Taste delivery', pos=(0, 0))
+    administer_crave_crush = visual.TextStim(win, text='administer crave crush')
+    swallow = visual.TextStim(win, text='Swallow', pos=(0, 0))
+    craving = visual.TextStim(win, text='Rate your craving (1 - 5)',
+                              pos=(0, .6))
+    # Image Stim
+    milkshake = visual.ImageStim(win, image='stimuli/Milkshake.jpg')
 
-    # create the base filename for our data files
-    if not DEBUG:
-        filename = "data/{participant}_{dateStr}".format(**info)
-        logfile = logging.LogFile(filename + ".log",
-                                  filemode='w',
-                                  level=logging.EXP)
 
-        # add trials to the experiment handler to store data
-        thisExp = data.ExperimentHandler(name='Sweet Image', version='1.0',
-                                         extraInfo=info, dataFileName=filename)
-        # there could be other loops (like practice loop)
-        thisExp.addLoop(trials)
-
-    # Loop through trials
-    for thisTrial in trials:
-        pl(thisTrial)
-        cue = visual.ImageStim(win, image='stimuli/' + thisTrial.image)
-        # fixation period
-        fixation.setAutoDraw(True)
-        for frameN in range(int(info['calibration'] * thisTrial.jitter)):
-            win.flip()
-
-        # present cue
-        cue.setAutoDraw(True)
-        for frameN in range(info['cueFrames']):
-            win.flip()
-        cue.setAutoDraw(False)
-
-        # win.callOnFlip(respClock.reset)
-        event.clearEvents()
-        respClock.getTime()
+    while not_done:
+        #1 10 sec blank screen with fixation cross
+        fixation.setAutoDraw(True)  # automatically draw every frame
         win.flip()
+        core.wait(10.0)
+        #2 10 sec milkshake image
+        milkshake.setAutoDraw(True)
+        win.flip()
+        core.wait(10.0)
+        #3 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        milkshake.setAutoDraw(True)
+        craving.setAutoDraw(True)
+        win.flip()
+        core.wait(5.0)
+        # TODO get input from button box
 
-        # Update log file
-        if not DEBUG:
-            thisExp.nextEntry()
+        #4 2 second fixation cross
+        fixation.setAutoDraw(True)  # automatically draw every frame
+        win.flip()
+        core.wait(2.0)
+        fixation.setAutoDraw(False)
+        #5 Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
+        for n in range(4):
+            taste_delivery.setAutoDraw(True)
+            win.flip()
+            # TODO: pump the milkshake
+            core.wait(10.0)
+            taste_delivery.setAutoDraw(False)
+            swallow.setAutoDraw(True)
+            win.flip()
+            core.wait(2.0)
+            swallow.setAutoDraw(False)
+        #6 10 sec milkshake image
+        milkshake.setAutoDraw(True)
+        win.flip()
+        core.wait(10.0)
+        #7 5 sec milkshake pic with craving scale below
+        milkshake.setAutoDraw(True)
+        craving.setAutoDraw(True)
+        win.flip()
+        core.wait(5.0)
+        # TODO get input from button box
 
-# Practice
+        #8 60 sec screen that counts down and tells participant to administer crave crush/placebo
+        countdown = 60
+        while countdown > 0:
+            administer_crave_crush.setAutoDraw(True)
+            counter = visual.TextStim(win, text='{0} seconds'.format(countdown))
+            counter.setAutoDraw(True)
+            win.flip()
+            core.wait(60.0)
+            countdown = countdown - 1
 
+        # not_done = False
+        #9 180 second blank screen for the crave crush/placebo to melt
+        core.wait(180.0)
+        # REPEAT 1-7
+
+# "%.1fs  %i/20" % (40 - loopClock.getTime(), trialPairNumber)
 run_block()
-# TODO: Show final message
+
