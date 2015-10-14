@@ -1,0 +1,33 @@
+0.3839 	WARNING 	Movie2 stim could not be imported and won't be available
+0.7244 	WARNING 	TextBox stim could not be imported and won't be available.
+0.7245 	WARNING 	TextBox Font Manager Found No Fonts.
+3.4757 	WARNING 	User requested fullscreen with size [1920 1080], but screen is actually [1280, 800]. Using actual size
+3.9306 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, bitsMode=UNKNOWN, blendMode='avg', color=array([ 0.,  0.,  0.]), colorSpace='rgb', fullscr=UNKNOWN, gamma=None, lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor instance at 0xc773490>, name='window1', pos=[0, 0], screen=0, size=array([1280,  800]), stereo=False, units=u'norm', useFBO=True, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+3.9307 	EXP 	window1: recordFrameIntervals = False
+4.0966 	EXP 	window1: recordFrameIntervals = True
+4.2800 	EXP 	window1: recordFrameIntervals = False
+4.3418 	EXP 	Created fixation = TextStim(alignHoriz='center', alignVert='center', antialias=True, autoLog=True, bold=False, color=u'white', colorSpace='named', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font=u'Arial', fontFiles=[], height=0.1, italic=False, name='fixation', opacity=1.0, ori=0, pos=array([ 0.,  0.]), rgb=array([ 255.,  255.,  255.]), text=u'+', units=u'norm', win=Window(...), wrapWidth=1)
+4.3584 	EXP 	Created image = ImageStim(autoLog=True, color=array([ 1.,  1.,  1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, image=u'stimuli/Milkshake.jpg', interpolate=True, mask=None, maskParams=None, name='image', opacity=1.0, ori=0.0, pos=array([ 0.,  0.]), size=array([ 0.6 ,  2.25]), texRes=128, units=u'norm', win=Window(...))
+4.3584 	EXP 	window1: units = 'norm'
+4.4189 	EXP 	window1: units = u'norm'
+4.4190 	EXP 	Created rating = RatingScale(acceptKeys=['return'], acceptPreText=UNKNOWN, acceptSize=UNKNOWN, acceptText=u'accept?', autoLog=True, choices=False, depth=0, disappear=False, flipVert=False, high=5, kwargs=UNKNOWN, labels=list(...), leftKeys=['left'], lineColor='White', low=1, marker=ShapeStim(...), markerColor='DarkBlue', markerExpansion=UNKNOWN, markerStart=None, maxTime=0.0, minTime=0.4, mouseOnly=False, name='rating', noMouse=False, pos=[0.0, -0.8], precision=1, respKeys=['1', '2', '3', '4', '5'], rightKeys=['right'], scale=u'Rate your craving from 1 - 5', self=UNKNOWN, showAccept=True, showValue=True, singleClick=False, size=0.6, skipKeys=['tab'], stretch=1.0, textColor='LightGray', textFont='Helvetica Bold', textSize=0.12, tickHeight=1.0, tickMarks=4.0, win=Window(...))
+4.4211 	EXP 	Created image_2 = ImageStim(autoLog=True, color=array([ 1.,  1.,  1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, image=None, interpolate=True, mask=None, maskParams=None, name='image_2', opacity=1.0, ori=0.0, pos=array([ 0.,  0.]), size=array([ 0.5,  0.5]), texRes=128, units=u'norm', win=Window(...))
+4.4245 	EXP 	Created fixation_2 = TextStim(alignHoriz='center', alignVert='center', antialias=True, autoLog=True, bold=False, color=u'white', colorSpace='named', contrast=1.0, depth=-5.0, flipHoriz=False, flipVert=False, font=u'Arial', fontFiles=[], height=0.1, italic=False, name='fixation_2', opacity=1.0, ori=0, pos=array([ 0.,  0.]), rgb=array([ 255.,  255.,  255.]), text=u'+', units=u'norm', win=Window(...), wrapWidth=1)
+4.4300 	EXP 	RatingScale rating: reset()
+4.4302 	EXP 	window1: recordFrameIntervals = False
+4.4463 	EXP 	rating: flipVert = False
+4.4463 	EXP 	rating: autoLog = True
+4.4463 	EXP 	fixation: autoDraw = True
+4.4464 	EXP 	window1: recordFrameIntervals = False
+14.4427 	EXP 	fixation: autoDraw = False
+14.4427 	EXP 	image: autoDraw = True
+24.4377 	EXP 	image: autoDraw = False
+24.4717 	EXP 	rating: autoDraw = True
+24.4717 	EXP 	image_2: autoDraw = True
+27.0644 	DATA 	Keypress: 7
+27.9316 	DATA 	Keypress: 5
+28.0988 	DATA 	Keypress: 4
+29.3699 	DATA 	Keypress: return
+29.3786 	DATA 	RatingScale rating: (key response) rating=4
+29.3787 	DATA 	RatingScale rating: rating RT=4.940
+29.3787 	DATA 	RatingScale rating: history=[(None, 0.0), (5, 3.496), (4, 3.679), (4, 4.94)]
