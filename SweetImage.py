@@ -68,8 +68,10 @@ def run_block():
         pl(thisTrial)
         cue = visual.ImageStim(win, image='stimuli/' + thisTrial.image)
         # fixation period
+        jitter = int(info['calibration'] * thisTrial.jitter)
+        print 'jitter={0}'.format(jitter)
         fixation.setAutoDraw(True)
-        for frameN in range(int(info['calibration'] * thisTrial.jitter)):
+        for frameN in range(jitter):
             win.flip()
 
         # present cue

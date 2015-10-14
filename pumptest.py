@@ -6,18 +6,19 @@ import serial
 # serial('com1','baudrate',19200,'databits',8,'terminator',13);
 ser = serial.Serial(
   port='/dev/tty.KeySerial1', # /dev/tty.KeySerial1 ? /dev/tty.USA19H142P1.1 ?
-  baudrate=115200, # 19200
-  parity=serial.PARITY_ODD,
-  stopbits=serial.STOPBITS_TWO,
-  bytesize=serial.SEVENBITS
+  baudrate=19200, # 19200
+  parity=serial.PARITY_NONE,
+  stopbits=serial.STOPBITS_ONE,
+  bytesize=serial.EIGHTBITS
 )
 
+# 15mm 0.7ml  ? min... 5ml 4 times (5ml is about a mouthfull? )
 
 if not ser.isOpen():
   ser.open()
 
 print ser
-commands = ['DIA26.59', 'PHN01', 'FUNRAT', 'RAT15MM', 'VOL0.7', 'DIRINF',
+commands = ['BUZ1','DIA26.59', 'PHN01', 'FUNRAT', 'RAT15MM', 'VOL0.7', 'DIRINF',
             'PHN02', 'FUNRAT', 'RAT7.5MM', 'VOL.5', 'DIRINF', 'PHN03',
             'FUNRAT', 'RAT15MM', 'VOL0.7', 'DIRWDR', 'PHN04', 'FUNSTP',
             'DIA26.59', 'PHN01', 'FUNRAT', 'RAT15MM', 'VOL1.0', 'DIRINF',
@@ -25,14 +26,14 @@ commands = ['DIA26.59', 'PHN01', 'FUNRAT', 'RAT15MM', 'VOL0.7', 'DIRINF',
             'FUNRAT', 'RAT15MM', 'VOL1.0', 'DIRWDR', 'PHN04', 'FUNSTP']
 
 for cmd in commands:
-  print cmd
-  ser.write(cmd + '\r\n')
-  time.sleep(1)
-  out = ''
-  while ser.inWaiting() > 0:
-    out += ser.read(1)
-  if out != '':
-    print '>>' + out
+      print cmd
+      ser.write(cmd + '\r\n')
+      time.sleep(1)
+      out = ''
+      while ser.inWaiting() > 0:
+          out += ser.read(1)
+      if out != '':
+          print '>>' + out
 
 # Dynamic
 # print 'Enter your commands below.\r\nInsert "exit" to leave the application.'
