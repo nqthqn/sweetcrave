@@ -14,6 +14,8 @@ import numpy as np  # whole numpy lib is available, prepend 'np.'
 from numpy import sin, cos, tan, log, log10, pi, average, sqrt, std, deg2rad, rad2deg, linspace, asarray
 from numpy.random import random, randint, normal, shuffle
 import os  # handy system and path functions
+import time
+import serial
 
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
@@ -85,11 +87,11 @@ fixation_2 = visual.TextStim(win=win, ori=0, name='fixation_2',
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
-routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
+routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine
 
 #------Prepare to start Routine "trial"-------
 t = 0
-trialClock.reset()  # clock 
+trialClock.reset()  # clock
 frameN = -1
 routineTimer.add(27.000000)
 # update component parameters for each repeat
@@ -113,7 +115,7 @@ while continueRoutine and routineTimer.getTime() > 0:
     t = trialClock.getTime()
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
-    
+
     # *fixation* updates
     if t >= 0.0 and fixation.status == NOT_STARTED:
         # keep track of start time/frame for later
@@ -122,7 +124,7 @@ while continueRoutine and routineTimer.getTime() > 0:
         fixation.setAutoDraw(True)
     if fixation.status == STARTED and t >= (0.0 + (10.0-win.monitorFramePeriod*0.75)): #most of one frame period left
         fixation.setAutoDraw(False)
-    
+
     # *image* updates
     if t >= 10.0 and image.status == NOT_STARTED:
         # keep track of start time/frame for later
@@ -138,7 +140,7 @@ while continueRoutine and routineTimer.getTime() > 0:
         rating.frameNStart = frameN  # exact frame index
         rating.setAutoDraw(True)
     continueRoutine &= rating.noResponse  # a response ends the trial
-    
+
     # *image_2* updates
     if t >= 20 and image_2.status == NOT_STARTED:
         # keep track of start time/frame for later
@@ -147,7 +149,7 @@ while continueRoutine and routineTimer.getTime() > 0:
         image_2.setAutoDraw(True)
     if image_2.status == STARTED and t >= (20 + (5-win.monitorFramePeriod*0.75)): #most of one frame period left
         image_2.setAutoDraw(False)
-    
+
     # *fixation_2* updates
     if t >= 25 and fixation_2.status == NOT_STARTED:
         # keep track of start time/frame for later
@@ -164,7 +166,7 @@ while continueRoutine and routineTimer.getTime() > 0:
         ISI.start(0.5)
     elif ISI.status == STARTED: #one frame should pass before updating params and completing
         ISI.complete() #finish the static period
-    
+
     # check if all components have finished
     if not continueRoutine:  # a component has requested a forced-end of Routine
         routineTimer.reset()  # if we abort early the non-slip timer needs reset
@@ -174,11 +176,11 @@ while continueRoutine and routineTimer.getTime() > 0:
         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
             continueRoutine = True
             break  # at least one component has not yet finished
-    
+
     # check for quit (the Esc key)
     if endExpNow or event.getKeys(keyList=["escape"]):
         core.quit()
-    
+
     # refresh the screen
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()

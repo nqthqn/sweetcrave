@@ -1,4 +1,16 @@
-from psychopy import visual, core, data, gui, logging
+from psychopy import visual, core, data, gui, logging, hardware
+import time
+import serial
+
+ser = serial.Serial(
+  port='/dev/tty.KeySerial1', # /dev/tty.KeySerial1 ? /dev/tty.USA19H142P1.1 ?
+  baudrate=19200, # 19200
+  parity=serial.PARITY_NONE,
+  stopbits=serial.STOPBITS_ONE,
+  bytesize=serial.EIGHTBITS
+)
+if not ser.isOpen():
+    ser.open()
 
 DEBUG = True
 fullscr = False
@@ -12,7 +24,6 @@ else:
 info = {}
 if not DEBUG:
     info['participant'] = ''
-info['condition'] = ''
 dlg = gui.DlgFromDict(info)
 if not dlg.OK:
     core.quit()
@@ -75,7 +86,8 @@ def run_block():
         for n in range(4):
             taste_delivery.setAutoDraw(True)
             win.flip()
-            # TODO: pump the milkshake
+            # TODO: pump 5 mL of milkshake (within 5 seconds?)
+            ser.write('BUZ1')
             core.wait(10.0)
             taste_delivery.setAutoDraw(False)
             swallow.setAutoDraw(True)
@@ -110,4 +122,3 @@ def run_block():
 
 # "%.1fs  %i/20" % (40 - loopClock.getTime(), trialPairNumber)
 run_block()
-

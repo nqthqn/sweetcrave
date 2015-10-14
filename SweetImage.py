@@ -24,8 +24,7 @@ info['dateStr'] = data.getDateStr()
 # initialise stimuli
 win = visual.Window(monSize, fullscr=fullscr,
                     monitor='testMonitor', units='deg')
-fixation = visual.Circle(win, size=0.5,
-                         lineColor='white', fillColor='lightGrey')
+fixation = visual.TextStim(win, text='+', pos=(0, 0))
 respClock = core.Clock()
 
 # set up the trials/experiment
