@@ -15,14 +15,26 @@ if not ser.isOpen():
 
 print ser
 
+ser.write('FUN BEP')
+time.sleep(1)
+ser.write('FUN RUN')
+time.sleep(1)
+
 # setup
 ser.write('DIA 26.59')
+time.sleep(1)
 ser.write('VOL ML')
+time.sleep(1)
 ser.write('TRGFT')
+time.sleep(1)
 ser.write('AL 0')
+time.sleep(1)
 ser.write('PF 0')
+time.sleep(1)
 ser.write('BP 1')
+time.sleep(1)
 ser.write('BP 1')
+time.sleep(1)
 
 ser.write('PHN 1')
 ser.write('FUN RAT')
@@ -35,7 +47,8 @@ ser.write('FUN RAT')
 ser.write('RAT 750 MH')
 ser.write('VOL 2.0')
 ser.write('DIR INF')
-ser.write('FUN BEP')
+ser.write('FUN RUN')
+
 
 
 fullscr = False
@@ -138,7 +151,7 @@ def run_block():
             # TODO: get bbox input
             win.flip()
         #  9> 60 sec screen that counts down and tells participant to administer crave crush/placebo
-        if cycle = 0:
+        if cycle == 0:
             timer = core.CountdownTimer(60)
             while timer.getTime() > 0:  # after 5s will become negative
                 administer_crave_crush.draw()
