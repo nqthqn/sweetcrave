@@ -115,6 +115,7 @@ def run_block():
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
         for i in [0,1,2,3]:
             ser.write('run01\r')
+            time.sleep(.25)
             for frame in range(60 * 10):
                 taste_delivery_text.draw()
                 win.flip()

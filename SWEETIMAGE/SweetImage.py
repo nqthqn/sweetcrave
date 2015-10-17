@@ -19,6 +19,7 @@ win = visual.Window(monSize, fullscr=fullscr,
                     monitor='testMonitor', units='deg')
 fixation = visual.TextStim(win, text='+', pos=(0, 0), height=2)
 instructions = visual.TextStim(win, pos=(0, 0), text=info['instructions'])
+scan_trigger_text = visual.TextStim(win, text='Waiting for scan trigger...', pos=(0, 0))
 
 respClock = core.Clock()
 
@@ -39,8 +40,14 @@ def run_block():
     while True:
         instructions.draw()
         win.flip()
-
         if len(event.getKeys()) > 0:
+            break
+        event.clearEvents()
+
+    while True:
+        scan_trigger_text.draw()
+        win.flip()
+        if 'apostrophe' in event.waitKeys():
             break
         event.clearEvents()
 
