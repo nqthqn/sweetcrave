@@ -4,7 +4,7 @@ import serial
 
 # /dev/tty.KeySerial1 ? /dev/tty.USA19H142P1.1 ?
 ser = serial.Serial(
-                    port='/dev/tty.KeySerial1',
+                    port='com1',
                     baudrate=19200,
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
@@ -15,10 +15,9 @@ if not ser.isOpen():
 
 print ser
 
-ser.write('FUN BEP')
+ser.write('BUZ13\r')
 time.sleep(1)
-ser.write('FUN RUN')
-time.sleep(1)
+core.quit()
 
 # setup
 ser.write('DIA 26.59')
