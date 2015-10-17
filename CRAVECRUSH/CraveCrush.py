@@ -113,10 +113,9 @@ def run_block():
         show_stim(fixation_text, 20) #  20 second fixation cross
 
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
-        for cycle in range(4):
+        for i in [0,1,2,3]:
             ser.write('run01\r')
-            time.sleep(1)
-            for frame in range(60 * 9):
+            for frame in range(60 * 10):
                 taste_delivery_text.draw()
                 win.flip()
             for frame in range(60 * 2):
