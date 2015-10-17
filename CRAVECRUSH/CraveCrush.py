@@ -14,7 +14,7 @@ if not dlg.OK:
 
 # Serial connection and commands setup
 ser = serial.Serial(
-                    port='/dev/tty.Bluetooth-Incoming-Port',
+                    port='com1',
                     baudrate=19200,
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
@@ -112,8 +112,8 @@ def run_block():
         event.clearEvents()
 
     for cycle in range(2):
-        # LET THE SCANNING BEGIN
 
+        # LET THE SCANNING BEGIN
         show_stim(fixation_text, 10)  # 10 sec blank screen with fixation cross
         show_stim(milkshake_image, 10)  # 10 sec milkshake image
         show_stim(crave_rating_scale, 5) # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
