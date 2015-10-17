@@ -29,7 +29,15 @@ time.sleep(1)
 
 pump_setup = ['VOL ML\r','TRGFT\r','AL 0\r','PF 0\r','BP 1\r','BP 1\r']
 
-pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat6mm\r', 'vol1\r', 'dirinf\r', 'stp\r','phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol0.7\r', 'dirwdr\r', 'phn04\r', 'funstp\r', 'dia26.59\r', 'phn01\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirinf\r', 'phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirwdr\r', 'phn04\r', 'funstp\r']
+# infuse 1mL@6mm, infuse .5mL@6mm, withdraw .7mL@15mm (max),
+pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat6mm\r', 'vol1\r', 'dirinf\r', \
+'phn02\r', 'funrat\r', 'rat6mm\r', 'vol.5\r', 'dirinf\r', \
+'phn03\r', 'funrat\r', 'rat15mm\r', 'vol0.7\r', 'dirwdr\r', \
+'phn04\r', 'funstp\r', \
+'dia26.59\r', 'phn01\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirinf\r', \
+'phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', \
+'phn03\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirwdr\r', \
+'phn04\r', 'funstp\r']
 
 for c in pump_setup:
     ser.write(c)
@@ -56,6 +64,7 @@ pumping_text = visual.TextStim(win, text='Pumping...', pos=(0, 0))
 scan_trigger_text = visual.TextStim(win, text='Waiting for scan trigger...', pos=(0, 0))
 swallow_text = visual.TextStim(win, text='Swallow', pos=(0, 0))
 milkshake_image = visual.ImageStim(win, image='Milkshake.jpg')
+milkshake_image2 = visual.ImageStim(win, image='Milkshake2.jpg', pos(0,.2))
 
 crave_rating_scale = visual.RatingScale(win=win, name='crave_rating', marker=u'triangle', size=1.0, pos=[0.0, -0.7], low=1, high=5, labels=[u''], scale=u'Rate your craving from 1 - 5')
 
@@ -82,7 +91,7 @@ def get_crave_rating(milkshake_image, crave_rating_scale, seconds):
 
 def run_block():
     # Pump test
-    ser.write('run01\r')
+    ser.write('run\r')
     while True:
         pumping_text.draw()
         win.flip()
@@ -109,12 +118,12 @@ def run_block():
         # LET THE SCANNING BEGIN
         show_stim(fixation_text, 10)  # 10 sec blank screen with fixation cross
         show_stim(milkshake_image, 10)  # 10 sec milkshake image
-        get_crave_rating(milkshake_image, crave_rating_scale, 5) # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        get_crave_rating(milkshake_image2, crave_rating_scale, 5) # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
         show_stim(fixation_text, 20) #  20 second fixation cross
 
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
         for i in [0,1,2,3]:
-            ser.write('run01\r')
+            ser.write('run\r')
             time.sleep(.25)
             for frame in range(60 * 10):
                 taste_delivery_text.draw()
@@ -125,19 +134,13 @@ def run_block():
 
         show_stim(fixation_text, 20) #  20 second blank screen with fixation cross
         show_stim(milkshake_image,10) #  10 sec milkshake image
-
-        #  8> 5 sec milkshake pic with craving scale below
-        for frame in range(60 * 5):
-            milkshake_image.draw()
-            crave_rating_scale.draw()
-            # TODO: get bbox input + fix bug with 2 bbox
-            win.flip()
+        get_crave_rating(milkshake_image2, crave_rating_scale, 5) # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
 
         #  9> 60 sec screen that counts down and tells participant to administer crave crush/placebo
         if cycle == 0:
             timer = core.CountdownTimer(60)
             while timer.getTime() > 0:  # after 5s will become negative
-                administer_crave_crush.draw()
+                administer_crave_crush_text.draw()
                 counter = visual.TextStim(win, text='\n\n{0} seconds'.format(int(timer.getTime())))
                 counter.draw()
                 win.flip()
