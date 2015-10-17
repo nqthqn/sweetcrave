@@ -57,7 +57,7 @@ pumping_text = visual.TextStim(win, text='Pumping...', pos=(0, 0))
 scan_trigger_text = visual.TextStim(win, text='Waiting for scan trigger...', pos=(0, 0))
 swallow_text = visual.TextStim(win, text='Swallow', pos=(0, 0))
 milkshake_image = visual.ImageStim(win, image='Milkshake.jpg')
-milkshake_image2 = visual.ImageStim(win, image='Milkshake2.jpg', pos(0,.2))
+milkshake_image2 = visual.ImageStim(win, image='Milkshake2.jpg', pos=(0,.2))
 
 crave_rating_scale = visual.RatingScale(win=win, name='crave_rating', marker=u'triangle', size=1.0, pos=[0.0, -0.7], low=1, high=5, labels=[u''], scale=u'Rate your craving from 1 - 5')
 
