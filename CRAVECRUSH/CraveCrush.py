@@ -84,8 +84,14 @@ def show_instruction(instrStim):
 def show_stim(stim, seconds):
     # shows a stim for a given number of seconds
     for frame in range(60 * seconds):
-            stim.draw()
-            win.flip()
+        stim.draw()
+        win.flip()
+
+def get_crave_rating(milkshake_image, crave_rating_scale, seconds):
+    for frame in range(60 * seconds):
+        milkshake_image.draw()
+        crave_rating_scale.draw()
+        win.flip()
 
 def run_block():
     # Pump test
@@ -116,19 +122,18 @@ def run_block():
         # LET THE SCANNING BEGIN
         show_stim(fixation_text, 10)  # 10 sec blank screen with fixation cross
         show_stim(milkshake_image, 10)  # 10 sec milkshake image
-        show_stim(crave_rating_scale, 5) # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        get_crave_rating(milkshake_image, crave_rating_scale, 5) # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
         show_stim(fixation_text, 20) #  20 second fixation cross
 
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
         for cycle in range(4):
             ser.write('run01\r')
             for frame in range(60 * 10):
-                taste_delivery.draw()
+                taste_delivery_text.draw()
                 win.flip()
             for frame in range(60 * 2):
-                swallow.draw()
+                swallow_text.draw()
                 win.flip()
-
 
         show_stim(fixation_text, 20) #  20 second blank screen with fixation cross
         show_stim(milkshake_image,10) #  10 sec milkshake image
