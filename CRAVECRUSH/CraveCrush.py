@@ -29,7 +29,7 @@ time.sleep(1)
 
 pump_setup = ['VOL ML\r','TRGFT\r','AL 0\r','PF 0\r','BP 1\r','BP 1\r']
 
-pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat6mm\r', 'vol1\r', 'dirinf\r', 'phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol0.7\r', 'dirwdr\r', 'phn04\r', 'funstp\r', 'dia26.59\r', 'phn01\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirinf\r', 'phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirwdr\r', 'phn04\r', 'funstp\r']
+pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat6mm\r', 'vol1\r', 'dirinf\r', 'stp\r','phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol0.7\r', 'dirwdr\r', 'phn04\r', 'funstp\r', 'dia26.59\r', 'phn01\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirinf\r', 'phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirwdr\r', 'phn04\r', 'funstp\r']
 
 for c in pump_setup:
     ser.write(c)
@@ -104,7 +104,7 @@ def run_block():
             break
         event.clearEvents()
 
-    for cycle in range(2):
+    for cycle in [0,1]:
 
         # LET THE SCANNING BEGIN
         show_stim(fixation_text, 10)  # 10 sec blank screen with fixation cross
@@ -115,7 +115,8 @@ def run_block():
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
         for cycle in range(4):
             ser.write('run01\r')
-            for frame in range(60 * 10):
+            time.sleep(1)
+            for frame in range(60 * 9):
                 taste_delivery_text.draw()
                 win.flip()
             for frame in range(60 * 2):
