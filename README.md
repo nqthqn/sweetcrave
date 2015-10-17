@@ -1,3 +1,11 @@
+todo:
+
+- [ ] milkshake volume adjustments
+- [ ] button box bug - record the data
+- [ ] ' trigger scan
+
+
+
 The public chatroom for this project is [here](https://gitter.im/natsn/sweetcrave).
 
 # sweetcrave
