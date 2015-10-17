@@ -27,32 +27,19 @@ if not ser.isOpen():
 ser.write('BUZ13\r')
 time.sleep(1)
 
-# setup (1.7 seconds)
-ser.write('DIA26.59\r')
-time.sleep(.25)
-ser.write('VOL ML\r')
-time.sleep(.25)
-ser.write('TRGFT\r')
-time.sleep(.25)
-ser.write('AL 0\r')
-time.sleep(.25)
-ser.write('PF 0\r')
-time.sleep(.25)
-ser.write('BP 1\r')
-time.sleep(.25)
-ser.write('BP 1\r')
-time.sleep(.25)
+pump_setup = ['VOL ML\r','TRGFT\r','AL 0\r','PF 0\r','BP 1\r','BP 1\r']
+
+pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat15mm\r', 'vol0.7\r', 'dirinf\r', 'phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol0.7\r', 'dirwdr\r', 'phn04\r', 'funstp\r', 'dia26.59\r', 'phn01\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirinf\r', 'phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirwdr\r', 'phn04\r', 'funstp\r']
+
+for c in pump_setup:
+    ser.write(c)
+    time.sleep(.25)
+
+for c in pump_phases:
+    ser.write(c)
+    time.sleep(.25)
 
 # phase 1, infuse .2ml at 15 mL/minute
-ser.write('phn01\r')
-time.sleep(.25)
-ser.write('rat15mm\r')
-time.sleep(.25)
-ser.write('vol.2\r')
-time.sleep(.25)
-ser.write('dirinf\r')
-time.sleep(.25)
-
 win = visual.Window(monSize, fullscr=fullscr,
                     monitor='testMonitor', units='deg')
 
