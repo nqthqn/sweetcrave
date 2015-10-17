@@ -2,9 +2,19 @@ from psychopy import visual, core, data, gui, event
 import time
 import serial
 
-# /dev/tty.KeySerial1 ? /dev/tty.USA19H142P1.1 ?
+# Lab tech setup
+fullscr = False
+monSize = [800, 600]
+info = {}
+info['participant'] = ''
+info['dateStr'] = data.getDateStr()
+dlg = gui.DlgFromDict(info)
+if not dlg.OK:
+    core.quit()
+
+# Serial connection and commands setup
 ser = serial.Serial(
-                    port='com1',
+                    port='/dev/tty.Bluetooth-Incoming-Port',
                     baudrate=19200,
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
@@ -13,8 +23,7 @@ ser = serial.Serial(
 if not ser.isOpen():
     ser.open()
 
-print ser
-
+# sanity check
 ser.write('BUZ13\r')
 time.sleep(1)
 
@@ -34,9 +43,8 @@ time.sleep(.25)
 ser.write('BP 1\r')
 time.sleep(.25)
 
+# phase 1, infuse .2ml at 15 mL/minute
 ser.write('phn01\r')
-time.sleep(.25)
-ser.write('funrat\r')
 time.sleep(.25)
 ser.write('rat15mm\r')
 time.sleep(.25)
@@ -44,89 +52,76 @@ ser.write('vol.2\r')
 time.sleep(.25)
 ser.write('dirinf\r')
 time.sleep(.25)
-ser.write('run01\r')
-
-core.quit()
-
-
-fullscr = False
-monSize = [1024, 768]  # might need to change this at LCNI
-
-info = {}
-
-info['participant'] = ''
-dlg = gui.DlgFromDict(info)
-if not dlg.OK:
-    core.quit()
-
-info['dateStr'] = data.getDateStr()
 
 win = visual.Window(monSize, fullscr=fullscr,
                     monitor='testMonitor', units='deg')
 
 # instruction Stims
-instruction1 = visual.TextStim(win, pos=(0, 0), text="You will see pictures of a chocolate milkshake that will be followed by tastes of milkshake. At certain points, you will be asked for a rating from 1 to 5. \n\nUse the button box to rate your craving for chocolate milkshake after seeing the picture. \n\nPress a button to continue.")
-instruction2 = visual.TextStim(win, pos=(0, 0), text="When you are instructed to administer the dose of Crave Crush or placebo, move slowly and wait until the last five seconds to put it in your mouth. \n\nPress a button to continue.")
-instruction3 = visual.TextStim(win, pos=(0, 0), text="Remember to follow the instructions carefully. \n\nPress a button when you are ready for the scan to begin.")
+instruction1_text = visual.TextStim(win, pos=(0, 0), text="You will see pictures of a chocolate milkshake that will be followed by tastes of milkshake. At certain points, you will be asked for a rating from 1 to 5. \n\nUse the button box to rate your craving for chocolate milkshake after seeing the picture. \n\nPress a button to continue.")
+instruction2_text = visual.TextStim(win, pos=(0, 0), text="When you are instructed to administer the dose of Crave Crush or placebo, move slowly and wait until the last five seconds to put it in your mouth. \n\nPress a button to continue.")
+instruction3_text = visual.TextStim(win, pos=(0, 0), text="Remember to follow the instructions carefully. \n\nPress a button when you are ready for the scan to begin.")
 
-# Stims
-fixation = visual.TextStim(win, text='+', pos=(0, 0), height=2)
-taste_delivery = visual.TextStim(win, text='Taste delivery', pos=(0, 0))
-administer_crave_crush = visual.TextStim(win, text='Administer crave crush', pos=(0, .6))
-swallow = visual.TextStim(win, text='Swallow', pos=(0, 0))
-milkshake = visual.ImageStim(win, image='Milkshake.jpg')
+# Other Stims
+fixation_text = visual.TextStim(win, text='+', pos=(0, 0), height=2)
+taste_delivery_text = visual.TextStim(win, text='Taste delivery', pos=(0, 0))
+administer_crave_crush_text = visual.TextStim(win, text='Administer crave crush', pos=(0, .6))
+pumping_text = visual.TextStim(win, text='Pumping...', pos=(0, 0))
+scan_trigger_text = visual.TextStim(win, text='Waiting for scan trigger...', pos=(0, 0))
+swallow_text = visual.TextStim(win, text='Swallow', pos=(0, 0))
+milkshake_image = visual.ImageStim(win, image='Milkshake.jpg')
+crave_rating_scale = visual.RatingScale(win=win, name='crave_rating', marker=u'triangle', size=1.0, pos=[0.0, -0.5], low=1, high=5, labels=[u''], scale=u'Rate your craving from 1 - 5')
 
-crave_rating = visual.RatingScale(win=win, name='crave_rating', marker=u'triangle', size=1.0, pos=[0.0, -0.5], low=1, high=5, labels=[u''], scale=u'Rate your craving from 1 - 5')
+def show_instruction(instrStim):
+    # shows an instruction until a key is hit.
+    while True:
+        instruction1.draw()
+        win.flip()
+        if len(event.getKeys()) > 0:
+            break
+        event.clearEvents()
 
+def show_stim(stim, seconds):
+    # shows a stim for a given number of seconds
+    for frame in range(60 * seconds):
+            stim.draw()
+            win.flip()
 
 def run_block():
-    for cycle in range(2):
-        # Instructions
-        while True:
-            instruction1.draw()
-            win.flip()
-            if len(event.getKeys()) > 0:
-                break
-            event.clearEvents()
-        while True:
-            instruction2.draw()
-            win.flip()
-            if len(event.getKeys()) > 0:
-                break
-            event.clearEvents()
-        while True:
-            instruction3.draw()
-            win.flip()
-            if len(event.getKeys()) > 0:
-                break
-            event.clearEvents()
+    # Pump test
+    ser.write('run01\r')
+    while True:
+        pumping.draw()
+        win.flip()
+        if 'c' in event.waitKeys():
+            break
+        event.clearEvents()
 
+    # Instructions (press any key to continue)
+    show_instruction(instruction1_text)
+    show_instruction(instruction2_text)
+    show_instruction(instruction3_text)
+
+    # Await scan trigger
+    while True:
+        scan_trigger_text.draw()
+        win.flip()
+        if 'apostrophe' in event.waitKeys():
+            break
+        event.clearEvents()
+
+    for cycle in range(2):
         # LET THE SCANNING BEGIN
 
-        #  1> 10 sec blank screen with fixation cross
-        for frame in range(60 * 10):
-            fixation.draw()
-            win.flip()
-
-        #  2> 10 sec milkshake image
-        for frame in range(60 * 10):
-            milkshake.draw()
-            win.flip()
-        #  3> 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
-        for frame in range(60 * 5):
-            milkshake.draw()
-            crave_rating.draw()
-            # TODO: get bbox input
-            win.flip()
-
-        #  4> 20 second fixation cross
-        for frame in range(60 * 20):
-            fixation.draw()
-            win.flip()
+        show_stim(fixation_text, 10)  # 10 sec blank screen with fixation cross
+        show_stim(milkshake_image, 10)  # 10 sec milkshake image
+        # TODO: 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        show_stim(crave_rating, 5) # add milkshake too
+        show_stim(fixation_text, 20) #  20 second fixation cross
         #  5> Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
+        core.quit()
 
-        # TODO - pump it baby!!!
         for cycle in range(4):
+            ser.write('run01\r')
             for frame in range(60 * 10):
                 taste_delivery.draw()
                 win.flip()
@@ -136,15 +131,15 @@ def run_block():
 
         #  6> 20 second blank screen with fixation cross
         for frame in range(60 * 10):
-            fixation.draw()
+            fixation_text.draw()
             win.flip()
         #  7> 10 sec milkshake image
         for frame in range(60 * 10):
-            milkshake.draw()
+            milkshake_image.draw()
             win.flip()
         #  8> 5 sec milkshake pic with craving scale below
         for frame in range(60 * 5):
-            milkshake.draw()
+            milkshake_image.draw()
             crave_rating.draw()
             # TODO: get bbox input
             win.flip()
@@ -164,3 +159,5 @@ def run_block():
                 win.flip()
 
 run_block()
+win.close()
+core.quit()
