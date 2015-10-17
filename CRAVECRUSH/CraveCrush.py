@@ -17,37 +17,36 @@ print ser
 
 ser.write('BUZ13\r')
 time.sleep(1)
+
+# setup (1.7 seconds)
+ser.write('DIA26.59\r')
+time.sleep(.25)
+ser.write('VOL ML\r')
+time.sleep(.25)
+ser.write('TRGFT\r')
+time.sleep(.25)
+ser.write('AL 0\r')
+time.sleep(.25)
+ser.write('PF 0\r')
+time.sleep(.25)
+ser.write('BP 1\r')
+time.sleep(.25)
+ser.write('BP 1\r')
+time.sleep(.25)
+
+ser.write('phn01\r')
+time.sleep(.25)
+ser.write('funrat\r')
+time.sleep(.25)
+ser.write('rat15mm\r')
+time.sleep(.25)
+ser.write('vol.2\r')
+time.sleep(.25)
+ser.write('dirinf\r')
+time.sleep(.25)
+ser.write('run01\r')
+
 core.quit()
-
-# setup
-ser.write('DIA 26.59')
-time.sleep(1)
-ser.write('VOL ML')
-time.sleep(1)
-ser.write('TRGFT')
-time.sleep(1)
-ser.write('AL 0')
-time.sleep(1)
-ser.write('PF 0')
-time.sleep(1)
-ser.write('BP 1')
-time.sleep(1)
-ser.write('BP 1')
-time.sleep(1)
-
-ser.write('PHN 1')
-ser.write('FUN RAT')
-ser.write('RAT 750 MH')
-ser.write('VOL 2.0')
-ser.write('DIR INF')
-
-ser.write('PHN 1')
-ser.write('FUN RAT')
-ser.write('RAT 750 MH')
-ser.write('VOL 2.0')
-ser.write('DIR INF')
-ser.write('FUN RUN')
-
 
 
 fullscr = False
