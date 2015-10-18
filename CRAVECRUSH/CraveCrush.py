@@ -133,8 +133,8 @@ def run_block():
         else:
             ratings.append(crave_rating_scale.getRating())
         crave_rating_scale.reset()
+        
         show_stim(fixation_text, 20) #  20 second fixation cross
-
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
         for i in [0,1,2,3]:
             ser.write('run\r')
