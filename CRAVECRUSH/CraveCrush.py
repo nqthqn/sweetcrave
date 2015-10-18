@@ -1,4 +1,8 @@
-from psychopy import visual, core, data, gui, event
+# TODO
+# - get data of cue onsets in csv with participant number prefixed
+# - adjust the rating scale
+
+from psychopy import visual, core, data, gui, event, data
 import time
 import serial
 
@@ -7,14 +11,14 @@ fullscr = False
 monSize = [800, 600]
 info = {}
 info['participant'] = ''
-info['dateStr'] = data.getDateStr()
 dlg = gui.DlgFromDict(info)
 if not dlg.OK:
     core.quit()
+info['dateStr'] = data.getDateStr()
 
 # Serial connection and commands setup
 ser = serial.Serial(
-                    port='com1',
+                    port='/dev/tty.Bluetooth-Incoming-Port',
                     baudrate=19200,
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
@@ -29,8 +33,10 @@ time.sleep(1)
 
 pump_setup = ['VOL ML\r','TRGFT\r','AL 0\r','PF 0\r','BP 1\r','BP 1\r']
 
-# infuse 1mL@6mm, infuse .5mL@6mm, withdraw .7mL@15mm (max),
-pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat6mm\r', 'vol1\r', 'dirinf\r', 'phn02\r', 'funrat\r', 'rat6mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol0.7\r', 'dirwdr\r', 'phn04\r', 'funstp\r', 'dia26.59\r', 'phn01\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirinf\r', 'phn02\r', 'funrat\r', 'rat7.5mm\r', 'vol.5\r', 'dirinf\r', 'phn03\r', 'funrat\r', 'rat15mm\r', 'vol1.0\r', 'dirwdr\r', 'phn04\r', 'funstp\r']
+# infuse 1mL@6mm, withdraw .1mL@15mm (max), stop pump
+pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat6mm\r', 'vol1\r', 'dirinf\r', \
+'phn02\r', 'funrat\r', 'rat15mm\r', 'vol0.1\r', 'dirwdr\r', \
+'phn03\r', 'funstp\r']
 
 for c in pump_setup:
     ser.write(c)
@@ -40,7 +46,6 @@ for c in pump_phases:
     ser.write(c)
     time.sleep(.25)
 
-# phase 1, infuse .2ml at 15 mL/minute
 win = visual.Window(monSize, fullscr=fullscr,
                     monitor='testMonitor', units='deg')
 
@@ -54,12 +59,14 @@ fixation_text = visual.TextStim(win, text='+', pos=(0, 0), height=2)
 taste_delivery_text = visual.TextStim(win, text='Taste delivery', pos=(0, 0))
 administer_crave_crush_text = visual.TextStim(win, text='Administer crave crush', pos=(0, .6))
 pumping_text = visual.TextStim(win, text='Pumping...', pos=(0, 0))
+pumping_ready_text = visual.TextStim(win, text='Ready to pump. Press \'c\' to initiate.', pos=(0, 0))
 scan_trigger_text = visual.TextStim(win, text='Waiting for scan trigger...', pos=(0, 0))
 swallow_text = visual.TextStim(win, text='Swallow', pos=(0, 0))
 milkshake_image = visual.ImageStim(win, image='Milkshake.jpg')
-milkshake_image2 = visual.ImageStim(win, image='Milkshake2.jpg', pos=(0,.2))
-
+milkshake_image2 = visual.ImageStim(win, image='Milkshake2.jpg', pos=(0,.5))
 crave_rating_scale = visual.RatingScale(win=win, name='crave_rating', marker=u'triangle', size=1.0, pos=[0.0, -0.7], low=1, high=5, labels=[u''], scale=u'Rate your craving from 1 - 5')
+
+ratings = [] # ALL THE DATA
 
 def show_instruction(instrStim):
     # shows an instruction until a key is hit.
@@ -70,20 +77,25 @@ def show_instruction(instrStim):
             break
         event.clearEvents()
 
+
 def show_stim(stim, seconds):
     # shows a stim for a given number of seconds
     for frame in range(60 * seconds):
         stim.draw()
         win.flip()
 
-def get_crave_rating(milkshake_image, crave_rating_scale, seconds):
-    for frame in range(60 * seconds):
-        milkshake_image.draw()
-        crave_rating_scale.draw()
-        win.flip()
 
 def run_block():
+    # trials = data.TrialHandler(trialList=all_stims, nReps=1,
+    #                            method='sequential')
+
     # Pump test
+    while True:
+        pumping_ready_text.draw()
+        win.flip()
+        if 'c' in event.waitKeys():
+            break
+        event.clearEvents()
     ser.write('run\r')
     while True:
         pumping_text.draw()
@@ -111,13 +123,22 @@ def run_block():
         # LET THE SCANNING BEGIN
         show_stim(fixation_text, 10)  # 10 sec blank screen with fixation cross
         show_stim(milkshake_image, 10)  # 10 sec milkshake image
-        get_crave_rating(milkshake_image2, crave_rating_scale, 5) # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        for frame in range(60 * 5):
+            milkshake_image2.draw()
+            crave_rating_scale.draw()
+            win.flip()
+        if crave_rating_scale.noResponse:
+            ratings.append(0)
+        else:
+            ratings.append(crave_rating_scale.getRating())
+
         show_stim(fixation_text, 20) #  20 second fixation cross
 
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
         for i in [0,1,2,3]:
             ser.write('run\r')
-            time.sleep(.25)
+            time.sleep(.25) # might need the pause
             for frame in range(60 * 10):
                 taste_delivery_text.draw()
                 win.flip()
@@ -127,7 +148,15 @@ def run_block():
 
         show_stim(fixation_text, 20) #  20 second blank screen with fixation cross
         show_stim(milkshake_image,10) #  10 sec milkshake image
-        get_crave_rating(milkshake_image2, crave_rating_scale, 5) # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+         # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        for frame in range(60 * 5):
+            milkshake_image2.draw()
+            crave_rating_scale.draw()
+            win.flip()
+        if crave_rating_scale.noResponse:
+            ratings.append(0)
+        else:
+            ratings.append(crave_rating_scale.getRating())
 
         #  9> 60 sec screen that counts down and tells participant to administer crave crush/placebo
         if cycle == 0:
@@ -146,4 +175,6 @@ def run_block():
 
 run_block()
 win.close()
+trials.saveAsExcel(fileName='data/{participant}_{dateStr}'.format(**info),
+                  stimOut=ratings)
 core.quit()
