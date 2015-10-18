@@ -36,7 +36,7 @@ time.sleep(1)
 pump_setup = ['VOL ML\r','TRGFT\r','AL 0\r','PF 0\r','BP 1\r','BP 1\r']
 
 # infuse 1mL@6mm, withdraw .1mL@15mm (max), stop pump
-pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat6mm\r', 'vol1\r', 'dirinf\r', \
+pump_phases = ['dia26.59\r', 'phn01\r', 'funrat\r', 'rat6.6mm\r', 'vol1\r', 'dirinf\r', \
 'phn02\r', 'funrat\r', 'rat15mm\r', 'vol0.1\r', 'dirwdr\r', \
 'phn03\r', 'funstp\r']
 
@@ -60,6 +60,7 @@ instruction3_text = visual.TextStim(win, pos=(0, 0), text="Remember to follow th
 fixation_text = visual.TextStim(win, text='+', pos=(0, 0), height=2)
 taste_delivery_text = visual.TextStim(win, text='Taste delivery', pos=(0, 0))
 administer_crave_crush_text = visual.TextStim(win, text='Administer Crave Crush/Placebo now', pos=(0, .6))
+dissolve_text = visual.TextStim(win, text='Wait for Crave Crush/Placebo to dissolve', pos=(0, .6))
 pumping_text = visual.TextStim(win, text='Pumping...', pos=(0, 0))
 pumping_ready_text = visual.TextStim(win, text='Ready to pump. Press \'c\' to initiate.', pos=(0, 0))
 scan_trigger_text = visual.TextStim(win, text='Waiting for scan trigger...', pos=(0, 0))
@@ -152,9 +153,10 @@ def run_block():
             crave_rating_scale.draw()
             win.flip()
         if crave_rating_scale.noResponse:
-            ratings.append(0)
+            ratings.append(-1)
         else:
             ratings.append(crave_rating_scale.getRating())
+        crave_rating_scale.reset()
 
         #  9> 60 sec screen that counts down and tells participant to administer crave crush/placebo
         if cycle == 0:
@@ -167,6 +169,7 @@ def run_block():
             #  10> 180 second blank screen for the crave crush/placebo to melt
             timer = core.CountdownTimer(180)
             while timer.getTime() > 0:  # after 5s will become negative
+                dissolve_text.draw()
                 counter = visual.TextStim(win, text='\n\n{0} seconds'.format(int(timer.getTime())))
                 counter.draw()
                 win.flip()
