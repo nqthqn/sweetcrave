@@ -3,13 +3,15 @@
 # - adjust the rating scale
 
 from psychopy import visual, core, data, gui, event, data
+import csv
 import time
 import serial
 
 # Lab tech setup
-fullscr = False
+
 monSize = [800, 600]
 info = {}
+info['fullscr'] = True
 info['participant'] = ''
 dlg = gui.DlgFromDict(info)
 if not dlg.OK:
@@ -18,7 +20,7 @@ info['dateStr'] = data.getDateStr()
 
 # Serial connection and commands setup
 ser = serial.Serial(
-                    port='/dev/tty.Bluetooth-Incoming-Port',
+                    port='com1',
                     baudrate=19200,
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
@@ -46,7 +48,7 @@ for c in pump_phases:
     ser.write(c)
     time.sleep(.25)
 
-win = visual.Window(monSize, fullscr=fullscr,
+win = visual.Window(monSize, fullscr=info['fullscr'],
                     monitor='testMonitor', units='deg')
 
 # instruction Stims
@@ -57,7 +59,7 @@ instruction3_text = visual.TextStim(win, pos=(0, 0), text="Remember to follow th
 # Other Stims
 fixation_text = visual.TextStim(win, text='+', pos=(0, 0), height=2)
 taste_delivery_text = visual.TextStim(win, text='Taste delivery', pos=(0, 0))
-administer_crave_crush_text = visual.TextStim(win, text='Administer crave crush', pos=(0, .6))
+administer_crave_crush_text = visual.TextStim(win, text='Administer Crave Crush/Placebo now', pos=(0, .6))
 pumping_text = visual.TextStim(win, text='Pumping...', pos=(0, 0))
 pumping_ready_text = visual.TextStim(win, text='Ready to pump. Press \'c\' to initiate.', pos=(0, 0))
 scan_trigger_text = visual.TextStim(win, text='Waiting for scan trigger...', pos=(0, 0))
@@ -86,9 +88,6 @@ def show_stim(stim, seconds):
 
 
 def run_block():
-    # trials = data.TrialHandler(trialList=all_stims, nReps=1,
-    #                            method='sequential')
-
     # Pump test
     while True:
         pumping_ready_text.draw()
@@ -129,16 +128,15 @@ def run_block():
             crave_rating_scale.draw()
             win.flip()
         if crave_rating_scale.noResponse:
-            ratings.append(0)
+            ratings.append(-1)
         else:
             ratings.append(crave_rating_scale.getRating())
-
+        crave_rating_scale.reset()
         show_stim(fixation_text, 20) #  20 second fixation cross
 
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
         for i in [0,1,2,3]:
             ser.write('run\r')
-            time.sleep(.25) # might need the pause
             for frame in range(60 * 10):
                 taste_delivery_text.draw()
                 win.flip()
@@ -175,6 +173,10 @@ def run_block():
 
 run_block()
 win.close()
-trials.saveAsExcel(fileName='data/{participant}_{dateStr}'.format(**info),
-                  stimOut=ratings)
+print ratings
+
+myfile = open('data/{participant}_{dateStr}'.format(**info), 'wb')
+wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+wr.writerow(ratings)
+
 core.quit()
