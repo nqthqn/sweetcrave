@@ -12,6 +12,7 @@ import serial
 monSize = [800, 600]
 info = {}
 info['fullscr'] = True
+info['port'] = 'com1'
 info['participant'] = ''
 dlg = gui.DlgFromDict(info)
 if not dlg.OK:
@@ -20,7 +21,7 @@ info['dateStr'] = data.getDateStr()
 
 # Serial connection and commands setup
 ser = serial.Serial(
-                    port='com1',
+                    port=info['port'],
                     baudrate=19200,
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
@@ -67,9 +68,9 @@ scan_trigger_text = visual.TextStim(win, text='Waiting for scan trigger...', pos
 swallow_text = visual.TextStim(win, text='Swallow', pos=(0, 0))
 milkshake_image = visual.ImageStim(win, image='Milkshake.jpg')
 milkshake_image2 = visual.ImageStim(win, image='Milkshake2.jpg', pos=(0,.5))
-crave_rating_scale = visual.RatingScale(win=win, name='crave_rating', marker=u'triangle', size=1.0, pos=[0.0, -0.7], low=0, high=4, labels=[u''], scale=u'Rate your craving from 1 - 5')
+crave_rating_scale = visual.RatingScale(win=win, name='crave_rating', marker=u'triangle', size=1.0, pos=[0.0, -0.7], low=0, high=4, labels=[u''], scale=u'Rate your craving from 0 - 4',singleClick=True)
 
-ratings = [] # ALL THE DATA
+ratings_and_onsets = [] # ALL THE DATA
 
 def show_instruction(instrStim):
     # shows an instruction until a key is hit.
@@ -118,49 +119,60 @@ def run_block():
             break
         event.clearEvents()
 
+    clock=core.Clock()
     for cycle in [0,1]:
-
         # LET THE SCANNING BEGIN
+        ratings_and_onsets.append(('fixation',clock.getTime()))
         show_stim(fixation_text, 10)  # 10 sec blank screen with fixation cross
+        ratings_and_onsets.append(('milkshake',clock.getTime()))
         show_stim(milkshake_image, 10)  # 10 sec milkshake image
-        # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        # >>5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        ratings_and_onsets.append(('rate_milkshake',clock.getTime()))
         for frame in range(60 * 5):
             milkshake_image2.draw()
             crave_rating_scale.draw()
             win.flip()
         if crave_rating_scale.noResponse:
-            ratings.append(-1)
+            ratings_and_onsets.append(('rating',-1))
+            crave_rating_scale.reset()
         else:
-            ratings.append(crave_rating_scale.getRating())
-        crave_rating_scale.reset()
-        
+            rate = crave_rating_scale.getRating()
+            crave_rating_scale.reset()
+            ratings_and_onsets.append(('rating',rate))
         show_stim(fixation_text, 20) #  20 second fixation cross
         #  Four cycles of taste delivery (10 sec each, screen that says 'taste delivery') and swallow (2 sec each, screen that says 'swallow')- total 48 sec
         for i in [0,1,2,3]:
             ser.write('run\r')
+            ratings_and_onsets.append(('taste_delivery',clock.getTime()))
             for frame in range(60 * 10):
                 taste_delivery_text.draw()
                 win.flip()
+            ratings_and_onsets.append(('swallow',clock.getTime()))
             for frame in range(60 * 2):
                 swallow_text.draw()
                 win.flip()
-
+        ratings_and_onsets.append(('fixation',clock.getTime()))
         show_stim(fixation_text, 20) #  20 second blank screen with fixation cross
+        ratings_and_onsets.append(('milkshake',clock.getTime()))
         show_stim(milkshake_image,10) #  10 sec milkshake image
-         # 5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+         # >>5 sec milkshake image with craving scale below, participants are asked to rate their craving for the milkshake on the button box 1-5
+        ratings_and_onsets.append(('rate_milkshake',clock.getTime()))
         for frame in range(60 * 5):
             milkshake_image2.draw()
             crave_rating_scale.draw()
             win.flip()
         if crave_rating_scale.noResponse:
-            ratings.append(-1)
+            ratings_and_onsets.append(('rating',-1))
+            crave_rating_scale.reset()
         else:
-            ratings.append(crave_rating_scale.getRating())
-        crave_rating_scale.reset()
+            rate = crave_rating_scale.getRating()
+            crave_rating_scale.reset()
+            ratings_and_onsets.append(('rating',rate))
 
         #  9> 60 sec screen that counts down and tells participant to administer crave crush/placebo
         if cycle == 0:
             timer = core.CountdownTimer(60)
+            ratings_and_onsets.append(('administer_crave_crush',clock.getTime()))
             while timer.getTime() > 0:  # after 5s will become negative
                 administer_crave_crush_text.draw()
                 counter = visual.TextStim(win, text='\n\n{0} seconds'.format(int(timer.getTime())))
@@ -168,6 +180,7 @@ def run_block():
                 win.flip()
             #  10> 180 second blank screen for the crave crush/placebo to melt
             timer = core.CountdownTimer(180)
+            ratings_and_onsets.append(('wait_for_dissolve',clock.getTime()))
             while timer.getTime() > 0:  # after 5s will become negative
                 dissolve_text.draw()
                 counter = visual.TextStim(win, text='\n\n{0} seconds'.format(int(timer.getTime())))
@@ -176,10 +189,12 @@ def run_block():
 
 run_block()
 win.close()
-print ratings
+print ratings_and_onsets
 
-myfile = open('data/{participant}_{dateStr}'.format(**info), 'wb')
+myfile = open('data/{participant}_{dateStr}.csv'.format(**info), 'wb')
 wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-wr.writerow(ratings)
+wr.writerow(['event','data'])
+for row in ratings_and_onsets:
+    wr.writerow([row[0],row[1]])
 
 core.quit()
