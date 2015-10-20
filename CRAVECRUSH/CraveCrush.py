@@ -1,6 +1,5 @@
-# TODO
-# - get data of cue onsets in csv with participant number prefixed
-# - adjust the rating scale
+# Crave Grush Experiement. 11/20/2015
+# Author: Nathan Nichols <nathann@ori.org>
 
 from psychopy import visual, core, data, gui, event, data
 import csv
