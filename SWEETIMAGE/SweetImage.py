@@ -1,10 +1,11 @@
 from psychopy import visual, core, event, data, gui
 import shutil
 
-fullscr = False
+
 monSize = [800, 600]
 
 info = {}
+info['fullscr'] = True
 info['participant'] = ''
 info['condition'] = ''
 dlg = gui.DlgFromDict(info)
@@ -15,7 +16,7 @@ info['dateStr'] = data.getDateStr()
 
 info['instructions'] = "You will see pictures of food and pictures of water. \n\nImagine you are eating the foods or drinking the water when the pictures appear. \n\nPress a button when you are ready for the scan to begin."
 
-win = visual.Window(monSize, fullscr=fullscr,
+win = visual.Window(monSize, fullscr=info['fullscr'],
                     monitor='testMonitor', units='deg')
 fixation = visual.TextStim(win, text='+', pos=(0, 0), height=2)
 instructions = visual.TextStim(win, pos=(0, 0), text=info['instructions'])
@@ -70,9 +71,9 @@ def run_block():
 
         win.flip()
     # END LOOP
-    shutil.copyfile('sweet_image_condition{0}.csv'.format(info['condition']), 'data/{participant}_condition{condition}_{dateStr}.csv'.format(**info))
-    win.close()
-    core.quit()
 
 
 run_block()
+shutil.copyfile('sweet_image_condition{0}.csv'.format(info['condition']), 'data/{participant}_condition{condition}_{dateStr}.csv'.format(**info))
+win.close()
+core.quit()
