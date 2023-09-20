@@ -1,15 +1,3 @@
-todo:
-
-- [ ] milkshake volume adjustments
-- [ ] button box bug - record the data
-- [ ] ' trigger scan
-
-
-
-The public chatroom for this project is [here](https://gitter.im/natsn/sweetcrave).
-
-# sweetcrave
-
 Welcome to sweetcrave, a project with two fMRI experiments ("Sweet Image" and "Crave Crush"). This project uses [PsychoPy](https://github.com/psychopy/psychopy), a free psychology software in Python. Please cite the relevant papers (Peirce 2007; 2009) if you use PsychoPy in published work.
 
 **PsychoPy Usage**
